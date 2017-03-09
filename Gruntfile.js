@@ -3,6 +3,20 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      js: {
+        // options: { separator: ';'},
+        // dist: {
+        src: ['app/collections/*.js', 'app/models/*.js', 'lib/*.js', 'public/lib/*.js', 'public/client/*.js'],
+        dest: 'public/dist/<%= pkg.name %>.js'
+        // }
+      }
+      // css: {
+      //   options: { separator: ';'},
+      //   dist: {
+          // src: ['public/*.css'],
+          // dest: 'public/dist/<%= pkg.name %>.css'
+      //   }
+      // }
     },
 
     mochaTest: {
@@ -21,10 +35,15 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      target: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.js': ['public/dist/*.js']
+        }
+      }
     },
 
     eslint: {
-      target: [
+      target: ['public/dist/shortly-deploy.min.js'
         // Add list of files to lint here
       ]
     },
@@ -51,6 +70,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: 'git push live4 master' 
       }
     },
   });
@@ -77,6 +97,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -89,7 +110,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'shell:prodServer' 
   ]);
+ 
+  grunt.registerTask('default', ['nodemon']);
 
 
 };
